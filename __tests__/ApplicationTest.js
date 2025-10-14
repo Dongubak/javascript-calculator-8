@@ -82,13 +82,28 @@ describe('입력 전처리 테스트', () => {
   });
 });
 
-describe('문자열 계산기', () => {
-  test('커스텀 구분자 사용', async () => {
+describe('문자열 계산기(커스텀 구분자 사용)', () => {
+  test('커스텀 구분자 사용 #1', async () => {
     const inputs = ['//;\\n1'];
     mockQuestions(inputs);
 
     const logSpy = getLogSpy();
     const outputs = ['결과 : 1'];
+
+    const app = new App();
+    await app.run();
+
+    outputs.forEach((output) => {
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining(output));
+    });
+  });
+
+  test('커스텀 구분자 사용 #2', async () => {
+    const inputs = ['//;\\n1;2'];
+    mockQuestions(inputs);
+
+    const logSpy = getLogSpy();
+    const outputs = ['결과 : 3'];
 
     const app = new App();
     await app.run();
@@ -105,5 +120,73 @@ describe('문자열 계산기', () => {
     const app = new App();
 
     await expect(app.run()).rejects.toThrow('[ERROR]');
+  });
+});
+
+describe('문자열 계산기(커스텀 구분자 미사용) [성공]', () => {
+  test('커스텀 구분자 미사용 #1', async () => {
+    const inputs = ['1,2,3'];
+    mockQuestions(inputs);
+
+    const logSpy = getLogSpy();
+    const outputs = ['결과 : 6'];
+
+    const app = new App();
+    await app.run();
+
+    outputs.forEach((output) => {
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining(output));
+    });
+  });
+
+  test('커스텀 구분자 미사용 #2', async () => {
+    const inputs = ['1:2:3'];
+    mockQuestions(inputs);
+
+    const logSpy = getLogSpy();
+    const outputs = ['결과 : 6'];
+
+    const app = new App();
+    await app.run();
+
+    outputs.forEach((output) => {
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining(output));
+    });
+  });
+
+  //! 현재 로직은 한자리 숫자만 판단 가능하며 두자리 이상의 숫자 입력시 에러 발생한다.
+
+  test('커스텀 구분자 미사용 #3', async () => {
+    const inputs = ['12:2:3'];
+    mockQuestions(inputs);
+
+    const logSpy = getLogSpy();
+    const outputs = ['결과 : 17'];
+
+    const app = new App();
+    await app.run();
+
+    outputs.forEach((output) => {
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining(output));
+    });
+  });
+});
+
+describe('문자열 계산기(커스텀 구분자 미사용) [실패]', () => {
+  test('타당하지 않은 구분자 #1', async () => {
+    const inputs = ['1@2@3'];
+    mockQuestions(inputs);
+    const app = new App();
+
+    await expect(app.run()).rejects.toThrow(UNIDENTIFIED_SEP);
+  });
+
+  //! 이는 음수를 입력받은 경우로 에러를 추가해야 한다.
+  test('타당하지 않은 숫자 #1', async () => {
+    const inputs = ['-1@2@3'];
+    mockQuestions(inputs);
+    const app = new App();
+
+    await expect(app.run()).rejects.toThrow(STARTING_FAILED);
   });
 });
