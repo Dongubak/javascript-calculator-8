@@ -9,7 +9,7 @@ import {
 
 class App {
   constructor() {
-    this.inputs = [];
+    this.inputs = '';
     this.defaultSup = [',', ':'];
     this.numberStartFlag = true;
     this.output = 0;
@@ -23,13 +23,14 @@ class App {
       this.isValidSepAndOperand();
       this.operationAndOutput();
     } catch (error) {
-      throw Error(error.message);
+      /// 에러 보존을 위한 인스턴스 에러 throw
+      throw error instanceof Error ? error : new Error(String(error));
     }
   }
 
   async getInput() {
     const inputs = await Console.readLineAsync();
-    if (inputs === '') throw Error(`[ERROR]: ${VACANCY_INPUT}`);
+    if (inputs === '') throw new Error(`[ERROR]: ${VACANCY_INPUT}`);
     this.inputs = inputs;
   }
 
@@ -46,11 +47,12 @@ class App {
     if (this.numberStartFlag) return;
     if (this.inputs.length <= 5) throw new Error(`${INVALID_SEP_END} #1`);
 
-    const [maybeSep, maybeNewLine] = [this.inputs[2], this.inputs.slice(3, 5)];
+    const sep = this.inputs[2];
+    const maybeNewLine = this.inputs.slice(3, 5);
 
     if (maybeNewLine !== '\\n') throw new Error(`${INVALID_SEP_END} #2`);
 
-    this.defaultSup = [...this.defaultSup, maybeSep];
+    this.defaultSup = [...this.defaultSup, sep];
     this.inputs = this.inputs.slice(5);
   }
 
@@ -79,7 +81,7 @@ class App {
   getSum() {
     let idx = 0,
       sum = 0;
-    for (const n of this.inputs) if (!(idx % 2)) sum += +n;
+    for (const n of this.inputs) if (!(idx++ % 2)) sum += +n;
 
     this.output = sum;
   }
