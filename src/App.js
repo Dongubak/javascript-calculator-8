@@ -1,5 +1,93 @@
+import { Console } from '@woowacourse/mission-utils';
+import {
+  INVALID_OPERAND,
+  INVALID_SEP_END,
+  STARTING_FAILED,
+  UNIDENTIFIED_SEP,
+  VACANCY_INPUT,
+} from './lib/error_msg';
+
 class App {
-  async run() {}
+  constructor() {
+    this.inputs = [];
+    this.defaultSup = [',', ':'];
+    this.numberStartFlag = true;
+    this.output = 0;
+  }
+
+  async run() {
+    try {
+      await this.getInput();
+      this.isStartCorrectly();
+      this.isValidSepInput();
+      this.isValidSepAndOperand();
+      this.operationAndOutput();
+    } catch (error) {
+      throw Error(error.message);
+    }
+  }
+
+  async getInput() {
+    const inputs = await Console.readLineAsync();
+    if (inputs === '') throw Error(`[ERROR]: ${VACANCY_INPUT}`);
+    this.inputs = inputs;
+  }
+
+  isStartCorrectly() {
+    const customStart = this.inputs.length > 2 ? this.inputs.slice(0, 2) : '';
+    const numberStart = /^\d/.test(this.inputs);
+
+    if (customStart !== '//' && !numberStart) throw new Error(STARTING_FAILED);
+
+    this.numberStartFlag = numberStart;
+  }
+
+  isValidSepInput() {
+    if (this.numberStartFlag) return;
+    if (this.inputs.length <= 5) throw new Error(`${INVALID_SEP_END} #1`);
+
+    const [maybeSep, maybeNewLine] = [this.inputs[2], this.inputs.slice(3, 5)];
+
+    if (maybeNewLine !== '\\n') throw new Error(`${INVALID_SEP_END} #2`);
+
+    this.defaultSup = [...this.defaultSup, maybeSep];
+    this.inputs = this.inputs.slice(5);
+  }
+
+  isValidSepAndOperand() {
+    let idx = 0;
+    try {
+      for (const ch of this.inputs) {
+        if (idx++ % 2) this.isValidSep(ch);
+        else this.isValidNumber(ch);
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  isValidNumber(ch) {
+    const isNumber = /^\d/.test(ch);
+    if (!isNumber) throw new Error(INVALID_OPERAND);
+  }
+
+  isValidSep(ch) {
+    const isValidSep = this.defaultSup.includes(ch);
+    if (!isValidSep) throw new Error(UNIDENTIFIED_SEP);
+  }
+
+  getSum() {
+    let idx = 0,
+      sum = 0;
+    for (const n of this.inputs) if (!(idx % 2)) sum += +n;
+
+    this.output = sum;
+  }
+
+  async operationAndOutput() {
+    this.getSum();
+    await Console.print(`결과 : ${this.output}`);
+  }
 }
 
 export default App;
