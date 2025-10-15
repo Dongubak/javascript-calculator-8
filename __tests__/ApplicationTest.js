@@ -177,18 +177,14 @@ describe('문자열 계산기(커스텀 구분자 사용)', () => {
 
 describe('App 프로퍼티 접근 테스트', () => {
   test('프로퍼티의 타당성 검증', async () => {
-    // 1️⃣ 입력 모킹
     const inputs = ['12:2:3'];
     mockQuestions(inputs);
 
-    // 2️⃣ Console.print를 spy 처리
     const logSpy = getLogSpy();
 
-    // 3️⃣ App 인스턴스 생성 및 실행
     const app = new App();
     await app.run();
     expect(app.output).toBe(17); // getSum() 결과
-    // await Console.print(`inputs: ${app.inputs}`);
 
     // 5️⃣ 콘솔 출력 결과 검증
     const outputs = ['결과 : 17'];
