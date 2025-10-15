@@ -10,7 +10,7 @@ import {
 class App {
   constructor() {
     this.inputs = '';
-    this.defaultSup = [',', ':'];
+    this.defaultSep = [',', ':'];
     this.numberStartFlag = true;
     this.output = 0;
   }
@@ -52,11 +52,16 @@ class App {
 
     if (maybeNewLine !== '\\n') throw new Error(`${INVALID_SEP_END} #2`);
 
-    this.defaultSup = [...this.defaultSup, sep];
+    this.defaultSep = [...this.defaultSep, sep];
     this.inputs = this.inputs.slice(5);
   }
 
   isValidSepAndOperand() {
+    const allowedChars = [...this.defaultSep, ...'0123456789'].join('');
+    const invalidChar = new RegExp(`[^${allowedChars}]`);
+
+    if (invalidChar.test(this.inputs)) throw new Error(UNIDENTIFIED_SEP);
+
     let idx = 0;
     try {
       for (const ch of this.inputs) {
@@ -74,7 +79,7 @@ class App {
   }
 
   isValidSep(ch) {
-    const isValidSep = this.defaultSup.includes(ch);
+    const isValidSep = this.defaultSep.includes(ch);
     if (!isValidSep) throw new Error(UNIDENTIFIED_SEP);
   }
 

@@ -166,6 +166,8 @@ describe('문자열 계산기(커스텀 구분자 미사용) [성공]', () => {
     const app = new App();
     await app.run();
 
+    await Console.print(app.token);
+
     outputs.forEach((output) => {
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining(output));
     });
