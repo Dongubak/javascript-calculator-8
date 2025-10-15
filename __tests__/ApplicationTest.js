@@ -40,12 +40,19 @@ test.skip('입력확인 #1', async () => {
 });
 
 describe('입력 전처리 테스트', () => {
-  test('빈 입력에 대한 에러 확인', async () => {
+  test('빈 입력에 0출력 확인', async () => {
     const inputs = [''];
     mockQuestions(inputs);
-    const app = new App();
 
-    await expect(app.run()).rejects.toThrow(VACANCY_INPUT);
+    const logSpy = getLogSpy();
+    const outputs = ['결과 : 0'];
+
+    const app = new App();
+    await app.run();
+
+    outputs.forEach((output) => {
+      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining(output));
+    });
   });
 
   test('시작 문자의 유효성 검증', async () => {

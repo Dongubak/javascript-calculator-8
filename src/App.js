@@ -12,6 +12,7 @@ class App {
     this.defaultSep = [',', ':'];
     this.numberStartFlag = true;
     this.output = 0;
+    this.tokens = [0];
   }
 
   async run() {
@@ -22,14 +23,19 @@ class App {
       this.isValidSepAndOperand();
       this.operationAndOutput();
     } catch (error) {
-      /// 에러 보존을 위한 인스턴스 에러 throw
-      throw error instanceof Error ? error : new Error(String(error));
+      switch (error.message) {
+        case VACANCY_INPUT:
+          await this.operationAndOutput();
+          break;
+        default:
+          throw error instanceof Error ? error : new Error(String(error));
+      }
     }
   }
 
   async getInput() {
     const inputs = await Console.readLineAsync();
-    if (inputs === '') throw new Error(`[ERROR]: ${VACANCY_INPUT}`);
+    if (inputs === '') throw new Error(VACANCY_INPUT);
     this.inputs = inputs;
   }
 
