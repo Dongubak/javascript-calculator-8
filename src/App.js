@@ -39,6 +39,11 @@ class App {
     this.inputs = inputs;
   }
 
+  isStartCorrectly() {
+    const isNumberStart = this.isValidStart(this.inputs);
+    this.numberStartFlag = isNumberStart;
+  }
+
   isValidStart(inputs) {
     const customStart = this.inputs.length > 2 ? inputs.slice(0, 2) : '';
     const numberStart = /^\d/.test(inputs);
@@ -46,21 +51,6 @@ class App {
     if (customStart !== '//' && !numberStart) throw new Error(STARTING_FAILED);
 
     return numberStart;
-  }
-
-  isStartCorrectly() {
-    const isNumberStart = this.isValidStart(this.inputs);
-    this.numberStartFlag = isNumberStart;
-  }
-
-  isValidLength(inputs) {
-    const len = inputs.length;
-    if (len <= 5) throw new Error(`${INVALID_SEP_END} #1`);
-  }
-
-  isValidNewLine(inputs) {
-    const maybeNewLine = this.inputs.slice(3, 5);
-    if (maybeNewLine !== '\\n') throw new Error(`${INVALID_SEP_END} #2`);
   }
 
   isValidSepInput() {
@@ -73,8 +63,14 @@ class App {
     this.inputs = this.inputs.slice(5);
   }
 
-  escapeForCharClass(s) {
-    return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+  isValidLength(inputs) {
+    const len = inputs.length;
+    if (len <= 5) throw new Error(`${INVALID_SEP_END} #1`);
+  }
+
+  isValidNewLine(inputs) {
+    const maybeNewLine = this.inputs.slice(3, 5);
+    if (maybeNewLine !== '\\n') throw new Error(`${INVALID_SEP_END} #2`);
   }
 
   isValidSepAndOperand() {
@@ -89,17 +85,21 @@ class App {
     if (!isValid) throw new Error(`${INVALID_OPERAND_OR_SEP} #3`);
   }
 
-  isValidSep(splitedInputs) {
-    if (splitedInputs.some((t) => t.length === 0)) {
-      throw new Error(`${INVALID_OPERAND_OR_SEP}`);
-    }
-  }
-
   getSplitter(inputs, seperators) {
     const cls = this.escapeForCharClass(seperators.join(''));
     const splitter = new RegExp(`[${cls}]`, 'g');
     const splitedInputs = inputs.split(splitter);
     return splitedInputs;
+  }
+
+  escapeForCharClass(s) {
+    return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+  }
+
+  isValidSep(splitedInputs) {
+    if (splitedInputs.some((t) => t.length === 0)) {
+      throw new Error(`${INVALID_OPERAND_OR_SEP}`);
+    }
   }
 
   getSum(tokens) {
