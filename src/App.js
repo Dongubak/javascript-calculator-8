@@ -1,10 +1,9 @@
 import { Console } from '@woowacourse/mission-utils';
 import {
-  INVALID_OPERAND,
   INVALID_SEP_END,
   STARTING_FAILED,
-  UNIDENTIFIED_SEP,
   VACANCY_INPUT,
+  INVALID_OPERAND_OR_SEP,
 } from './lib/error_msg';
 
 class App {
@@ -56,39 +55,47 @@ class App {
     this.inputs = this.inputs.slice(5);
   }
 
+  escapeForCharClass(s) {
+    return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+  }
+
   isValidSepAndOperand() {
-    const allowedChars = [...this.defaultSep, ...'0123456789'].join('');
-    const invalidChar = new RegExp(`[^${allowedChars}]`);
+    // 1) 현재 등록된 구분자들로 split 준비
+    const cls = this.escapeForCharClass(this.defaultSep.join(''));
+    const splitter = new RegExp(`[${cls}]`, 'g');
 
-    if (invalidChar.test(this.inputs)) throw new Error(UNIDENTIFIED_SEP);
+    // 2) 구분자로 분리 (예: "1,2:3" -> ["1","2","3"])
+    const splitedInputs = this.inputs.split(splitter);
 
-    let idx = 0;
-    try {
-      for (const ch of this.inputs) {
-        if (idx++ % 2) this.isValidSep(ch);
-        else this.isValidNumber(ch);
-      }
-    } catch (error) {
-      throw new Error(error.message);
+    // 3) 연속/선행/후행 구분자 -> 빈 토큰 발생 시 단일 에러
+    if (splitedInputs.some((t) => t.length === 0)) {
+      throw new Error(`${INVALID_OPERAND_OR_SEP}`);
     }
+
+    for (const str of splitedInputs) {
+      if (!/^\d+$/.test(str)) {
+        // 알 수 없는 구분자나 문자(예: "1%2")도 여기서 걸림
+        throw new Error(`${INVALID_OPERAND_OR_SEP}`);
+      }
+    }
+
+    this.tokens = splitedInputs.map(Number);
   }
 
   isValidNumber(ch) {
-    const isNumber = /^\d/.test(ch);
-    if (!isNumber) throw new Error(INVALID_OPERAND);
+    const isNumber = /^\d+$/.test(str);
+    if (!isNumber) {
+      throw new Error(`${INVALID_OPERAND_OR_SEP} #2`);
+    }
   }
 
   isValidSep(ch) {
     const isValidSep = this.defaultSep.includes(ch);
-    if (!isValidSep) throw new Error(UNIDENTIFIED_SEP);
+    if (!isValidSep) throw new Error(`${INVALID_OPERAND_OR_SEP} #3`);
   }
 
   getSum() {
-    let idx = 0,
-      sum = 0;
-    for (const n of this.inputs) if (!(idx++ % 2)) sum += +n;
-
-    this.output = sum;
+    this.output = this.tokens.reduce((acc, n) => acc + n, 0);
   }
 
   async operationAndOutput() {
