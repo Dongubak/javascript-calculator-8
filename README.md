@@ -63,19 +63,60 @@
 
 ## 단위 테스트
 ### isStartCorrectly
-- 단위 모듈 목록
+#### 역할
+입력이 적절하게 시작하는지 검증하는 모듈이다.
+
+#### 단위 모듈 목록
   - isValidStart
 
-### 원인 결과 그래프
-c1. //로 시작하는 입력<br />
-c2. 숫자로 시작하는 입력
+#### 원인 결과 그래프
+c1. //로 시작하는 입력이다.<br />
+c2. 숫자로 시작하는 입력이다.
 
-e1. "[ERROR]: starting with invalid form" 출력<br />
-e2. 숫자 시작 여부 반환
+e1. "[ERROR]: starting with invalid form" 출력한다.<br />
+e2. 숫자 시작 여부 반환한다.
 
 ![alt text](image.png)
 
-### 테스트 입력 / 출력
+#### 테스트 입력 / 출력
 "//123" / ~e2
 "1,2,3" / ~e2
 "&84" / e1
+
+### isValidSepInput
+#### 역할
+적절한 길이를 갖고 있으며, 적절한 위치에 postfix가 있는가를 검증하는 모듈이다.
+
+#### 단위 모듈 목록
+  - isValidLength
+  - isValidNewLine
+
+#### isValidLength
+##### 역할
+입력이 5글자 초과인지 검증하는 모듈이다.
+
+##### 원인 결과 그래프
+c1. 5글자 이하의 입력<br /><br />
+e1. '[ERROR]: invalid sep or ender #1' 출력<br/>
+e2. pass
+
+![alt text](image-1.png)
+
+##### 테스트 입력 / 출력
+"//12345" / e2<br />
+"//12" / e1<br />
+"//,\\\n" e1<br />
+
+#### isValidNewLine
+##### 역할
+입력에 개행이 존재하며 적절한 위치에 있는가
+##### 원인 결과 그래프
+c1. 입력에 \\\n이 포함되어 있지 않다.<br />
+e1. [ERROR]: invalid sep or ender #2 출력한다.<br />
+e2. pass<br />
+
+![alt text](image-2.png)
+
+##### 테스트 입력 / 출력
+"//,\\n1,2" / e2
+"//,1,2,3" / e1
