@@ -9,6 +9,7 @@ import {
   isValidSepOrChar,
   isValidStart,
 } from './lib/utils';
+
 class App {
   constructor() {
     this.inputs = '';

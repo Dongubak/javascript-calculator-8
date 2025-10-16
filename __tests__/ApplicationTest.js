@@ -1,15 +1,13 @@
-import App from '../src/App.js';
 import { Console, MissionUtils } from '@woowacourse/mission-utils';
+import App from '../src/App';
 import {
   INVALID_OPERAND_OR_SEP,
   INVALID_SEP_END,
   STARTING_FAILED,
-  VACANCY_INPUT,
-} from '../src/lib/error_msg.js';
+} from '../src/lib/error_msg';
 
 const mockQuestions = (inputs) => {
   MissionUtils.Console.readLineAsync = jest.fn();
-
   MissionUtils.Console.readLineAsync.mockImplementation(() => {
     const input = inputs.shift();
     return Promise.resolve(input);

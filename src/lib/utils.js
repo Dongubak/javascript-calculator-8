@@ -18,6 +18,10 @@ export function isValidStart(inputs) {
   return numberStart;
 }
 
+function escapeForCharClass(s) {
+  return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
 export function getSplitter(inputs, seperators) {
   const cls = escapeForCharClass(seperators.join(''));
   const splitter = new RegExp(`[${cls}]`, 'g');
@@ -43,8 +47,4 @@ export function isValidLength(inputs) {
 export function isValidNewLine(inputs) {
   const maybeNewLine = inputs.slice(3, 5);
   if (maybeNewLine !== '\\n') throw new Error(`${INVALID_SEP_END} #2`);
-}
-
-function escapeForCharClass(s) {
-  return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
