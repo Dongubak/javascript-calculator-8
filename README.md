@@ -140,7 +140,7 @@ e2. pass<br />
 "", "1,2,3,4,5" / [1,2,3,4,5]<br />
 ":", "1:2:3:4:5" / [1,2,3,4,5]<br />
 ":", "1:2,3,4,5" / [1,2,3,4,5]<br />
-"", "" / []<br/>
+~~ "", "" / [] ~~<br/>
 
 
 #### isValidSep
@@ -150,8 +150,8 @@ e2. pass<br />
 
 ##### 원인 결과 그래프 생략
 ##### 테스트 입력 / 출력
-"['1', '2', '3']" / pass
-"['1', '', '4']" / [ERROR]: invalid operand or sep
+"['1', '2', '3']" / pass<br />
+"['1', '', '4']" / [ERROR]: invalid operand or sep<br />
 
 #### invalidSepOrChar
 ##### 역할
@@ -159,7 +159,7 @@ e2. pass<br />
 
 ##### 원인 결과 그래프 생략
 ##### 테스트 입력
-"1" / pass
-"12" / pass
-"123" / pass
-"abc" / [ERROR]: invalid operand or sep #3
+"1" / pass<br />
+"12" / pass<br />
+"123" / pass<br />
+"abc" / [ERROR]: invalid operand or sep #3<br />
