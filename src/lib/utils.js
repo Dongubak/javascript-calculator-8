@@ -1,3 +1,4 @@
+import { MissionUtils } from '@woowacourse/mission-utils';
 import {
   INVALID_SEP_END,
   STARTING_FAILED,
@@ -47,4 +48,8 @@ export function isValidLength(inputs) {
 export function isValidNewLine(inputs) {
   const maybeNewLine = inputs.slice(3, 5);
   if (maybeNewLine !== '\\n') throw new Error(`${INVALID_SEP_END} #2`);
+}
+
+export async function printData(data) {
+  await MissionUtils.Console.print(`결과 : ${data}`);
 }

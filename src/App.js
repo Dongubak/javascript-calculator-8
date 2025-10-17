@@ -8,6 +8,7 @@ import {
   isValidSep,
   isValidSepOrChar,
   isValidStart,
+  printData,
 } from './lib/utils';
 
 class App {
@@ -70,7 +71,7 @@ class App {
   async operationAndOutput() {
     const sum = getSum(this.tokens);
     this.output = sum;
-    await Console.print(`결과 : ${sum}`);
+    await printData(this.output);
   }
 }
 
